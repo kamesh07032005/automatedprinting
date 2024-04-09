@@ -1,1 +1,177 @@
-hi new hello world
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Order Details</title>
+    <link rel="stylesheet" href="styles.css" />
+    <style>
+     
+      table {
+        width: 100%; /* Set the width to 100% of the viewport */
+        border-collapse: collapse;
+        margin-bottom: 20px;
+      }
+      th,
+      td {
+        border: 1px solid #ddd;
+        padding: 8px;
+        text-align: left;
+      }
+      th {
+        background-color: #f2f2f2;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <h1>Vaseegrah Veda</h1>
+      <h1>Order Details</h1>
+      <div>
+        <label for="order-id">Enter Order ID:</label>
+        <input type="text" id="order-id" />
+        <button onclick="fetchOrderDetails()">Get Details</button>
+        <button onclick="downloadPDF()">Download PDF</button>
+        <button onclick="updateOrderNotes()">Update Order Notes</button>
+        <!-- New button for updating order notes -->
+      </div>
+      <div id="order-details"></div>
+    </div>
+
+    <script>
+      async function fetchOrderDetails() {
+        const orderId = document.getElementById("order-id").value;
+        if (!orderId) {
+          alert("Please enter an order ID.");
+          return;
+        }
+        try {
+          const response = await fetch(`/order-details/${orderId}`);
+          const order = await response.json();
+          displayOrderDetails(order);
+        } catch (error) {
+          console.error("Error fetching order details:", error);
+          alert("Error fetching order details. Please try again.");
+        }
+      }
+
+      function displayOrderDetails(order) {
+        const orderDetailsElement = document.getElementById("order-details");
+        if (order.id) {
+          orderDetailsElement.innerHTML = `
+          <div class="content">  
+          <h3>Ship Via : ST COURIER</h3>
+            <center><h2>Vaseegrah Veda Order ID ${order.id}</h2></center>
+            <table>
+              <tr>
+                <td style="font-size: 40px; padding: 8px; text-align: center;" >To</td>
+                    <td>
+                   ${order.billing.first_name}
+                   ${order.billing.last_name},<br>
+                   ${order.billing.phone}
+                   ${order.shipping.address_1},<br> 
+                   ${order.shipping.city}, <br>
+                   ${order.shipping.state},- 
+                   ${order.shipping.postcode}.<br>
+                   ${order.shipping.country},<br>
+                   ${order.billing.phone}</td>
+                </tr>
+            </table>
+
+
+            <table >
+    <tbody>
+      <tr>
+        <td ><b>Seller:</b><br>
+            <b>VASEEGRAH VEDA</b><br>
+            No:7 VIJAYA NAGAR,<br>
+            SRINIVASAPURAM (Post)<br>
+            THANJAVUR<br>
+            TAMIL NADU- 613009<br>
+            MOBILE: 8248817165
+        </td>
+        <td><b>Prepaid Order:</b><br>
+            Date          :          ${order.date_created}     <br>
+            Weight        :          ${order.total_weight}     <br>
+            No.of Items   :          ${order.line_items.length}     <br>
+            Packed By     :          None<br>
+        </td>
+      </tr>
+      <tr >
+        <td colspan='2'>
+            <strong>Products:</strong><br>
+           ${order.line_items
+                  .map(
+                    (item) => `
+                    
+                    &nbsp${item.name} X
+                    ${item.quantity},
+                        
+                        
+                    `
+                  )
+                  .join("")}
+        </td>
+        </tr>
+    </tbody>
+  </table>
+  </div>
+        `;
+        } else {
+          orderDetailsElement.innerHTML = "<p>No order found with this ID.</p>";
+        }
+      }
+
+      async function downloadPDF() {
+        const orderId = document.getElementById("order-id").value;
+        if (!orderId) {
+          alert("Please enter an order ID.");
+          return;
+        }
+        try {
+          const response = await fetch(`/generate-pdf/${orderId}`);
+          const blob = await response.blob();
+          const url = window.URL.createObjectURL(blob);
+          const a = document.createElement("a");
+          a.href = url;
+          a.download = `order_${orderId}.pdf`;
+          document.body.appendChild(a);
+          a.click();
+          window.URL.revokeObjectURL(url);
+        } catch (error) {
+          console.error("Error downloading PDF:", error);
+          alert("Error downloading PDF. Please try again.");
+        }
+      }
+
+      async function updateOrderNotes() {
+        const orderId = document.getElementById("order-id").value;
+        if (!orderId) {
+          alert("Please enter an order ID.");
+          return;
+        }
+        try {
+          // Check if customer notes exist for the order
+          const response = await fetch(`/check-customer-notes/${orderId}`);
+          const { notesExist, containsText, message } = await response.json();
+          console.log(notesExist, containsText);
+          if (!notesExist) {
+            alert("No customer notes found for this order.");
+          } else if (containsText) {
+            alert("The customer note contains the specified text.");
+          } else {
+            // If customer notes exist but don't contain the specified text, proceed with updating notes
+            const updateResponse = await fetch(
+              `/update-order-notes/${orderId}`
+            );
+            const updateMessage = await updateResponse.text();
+            alert(updateMessage);
+          }
+        } catch (error) {
+          console.error("Error updating order notes:", error);
+          alert("Error updating order notes. Please try again.");
+        }
+      }
+    </script>
+  </body>
+</html>

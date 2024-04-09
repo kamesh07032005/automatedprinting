@@ -1,0 +1,92 @@
+body {
+  font-family: Arial, sans-serif;
+  background-color: #ffd1a5; /* Light gray background */
+  margin: 0;
+  padding: 0;
+}
+
+.container { 
+  max-width: 800px;
+  max-height: 180px;
+  margin: 50px auto;
+  background-color: rgb(255, 255, 255); /* White container background */
+  padding: 20px;
+  border-radius: 10px; /* Rounded corners */
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1); /* Subtle shadow */
+}
+
+h1 {
+  text-align: center;
+  color: #333;
+}
+
+/* Order details form */
+form {
+  text-align: center;
+}
+
+label {
+  font-size: 18px;
+}
+
+input[type="text"] {
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  margin-right: 10px;
+}
+
+button {
+  padding: 10px 20px;
+  background-color: #f0413e; /* Coral color for button */
+  color: #fff;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+button:hover {
+  background-color: #ff6347; /* Darker coral color on hover */
+}
+
+/* Order details display */
+#order-details {
+  margin-top: 20px;
+  border-top: 2px solid #ddd; /* Gray border at the top */
+  padding-top: 20px;
+}
+
+#order-details p {
+  font-size: 16px;
+  line-height: 1.6;
+}
+
+.content {
+  width: 4in;
+  height: 4in;
+  background-color: white;
+  margin: auto;
+  border: 3px solid black;
+  padding: 5px;
+  font-size: 12px; /* Adjust font size for the entire content */
+}
+
+.content p {
+  font-size: 12px; /* Adjust paragraph font size */
+}
+
+.content table {
+  font-size: 12px; /* Adjust font size for table */
+}
+
+.content table th,
+.content table td {
+  font-size: 12px; /* Adjust font size for table cells */
+}
+
+  
+ 
+  
+  
+  
+
